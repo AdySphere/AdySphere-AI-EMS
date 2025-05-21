@@ -1,4 +1,5 @@
-streamlit
-openai-whisper
+streamlit==1.45.1
+openai-whisper==20230314
+torch>=1.10.0
 ffmpeg-python
 requests

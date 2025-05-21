@@ -73,7 +73,7 @@ if uploaded_file:
     # -----------------------------
     # 🔑 Together API Setup
     # -----------------------------
-    api_key = st.secrets["TOGETHER_API_KEY"] if "TOGETHER_API_KEY" in st.secrets else "YOUR_API_KEY_HERE"
+    api_key = st.secrets["895b590f32d6475e94c42ecd8c42ab90b0b83c507bea5ef59b9748a5787f38c5"] if "895b590f32d6475e94c42ecd8c42ab90b0b83c507bea5ef59b9748a5787f38c5" in st.secrets else "895b590f32d6475e94c42ecd8c42ab90b0b83c507bea5ef59b9748a5787f38c5"
     together_url = "https://api.together.xyz/v1/chat/completions"
 
     prompt = f"""

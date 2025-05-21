@@ -1,12 +1,10 @@
-# app.py
-
 import streamlit as st
-import whisper
 import os
 import requests
 import json
 import tempfile
 import email
+import openai
 
 # -----------------------------
 # 🎨 Streamlit UI
@@ -14,6 +12,12 @@ import email
 st.set_page_config(page_title="Meeting & Email Summarizer", layout="centered")
 st.title("📋 Meeting & Email Summarizer")
 st.markdown("Upload a **recording (.mp3, .wav, .mp4)**, **text file (.txt)**, or **email (.eml)** to generate action items and summaries.")
+
+# -----------------------------
+# 🔑 API Keys
+# -----------------------------
+openai.api_key = "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"
+together_api_key = "895b590f32d6475e94c42ecd8c42ab90b0b83c507bea5ef59b9748a5787f38c5"
 
 # -----------------------------
 # 📁 Upload File
@@ -31,10 +35,14 @@ if uploaded_file:
     # 🎧 Transcribe or Read
     # -----------------------------
     if file_type.endswith(('.mp3', '.wav', '.mp4')):
-        st.info("Transcribing audio using Whisper...")
-        model = whisper.load_model("base")  # or "tiny"
-        result = model.transcribe(file_path)
-        transcript = result["text"]
+        st.info("Transcribing audio using OpenAI Whisper API...")
+        try:
+            with open(file_path, "rb") as audio_file:
+                transcript_data = openai.Audio.transcribe("whisper-1", audio_file)
+                transcript = transcript_data["text"]
+        except Exception as e:
+            st.error(f"Transcription failed: {e}")
+            st.stop()
 
     elif file_type.endswith('.eml'):
         st.info("Reading email content...")
@@ -62,9 +70,8 @@ if uploaded_file:
     st.text_area("Transcript", transcript[:1000], height=250)
 
     # -----------------------------
-    # 🔑 Together API Setup (API key directly in code)
+    # 🧠 Together.ai Summary Generation
     # -----------------------------
-    api_key = "895b590f32d6475e94c42ecd8c42ab90b0b83c507bea5ef59b9748a5787f38c5"  # <-- Your API key here
     together_url = "https://api.together.xyz/v1/chat/completions"
 
     prompt = f"""
@@ -81,7 +88,7 @@ if uploaded_file:
     """
 
     headers = {
-        "Authorization": f"Bearer {api_key}",
+        "Authorization": f"Bearer {together_api_key}",
         "Content-Type": "application/json"
     }
 
